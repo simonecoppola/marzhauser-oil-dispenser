@@ -9,6 +9,9 @@ setup(
     license='',
     author='simone coppola',
     author_email='',
-    description=''
+    description='',
+    install_requires=[
+        'pyserial'
+    ]
 )
 
