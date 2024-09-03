@@ -1,6 +1,6 @@
 import serial
 
-class OilDispenser:
+class OilDispenser():
     def __init__(self, port, baudrate=57600, timeout=1):
         self.port = port
         self.serial = serial.Serial(port)
@@ -29,6 +29,10 @@ class OilDispenser:
     def getPowerSupply(self):
         self.serial.write(b'?powersupply\n')
         return self.serial.readline()
+
+    def setLeadTime(self, lead_time: int):
+        instruction = b'!leadtime ' + bytes(str(lead_time), encoding='utf8')
+        self.serial.write(instruction + b'\n')
 
     # dispenser utilities
     def dispense(self, time: int):
