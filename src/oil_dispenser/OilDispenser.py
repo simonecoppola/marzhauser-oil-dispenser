@@ -1,9 +1,10 @@
 import serial
 
+
 class OilDispenser():
-    def __init__(self, port, baudrate=57600, timeout=1):
+    def __init__(self, port: str, baudrate: int = 57600, timeout: int = 1):
         self.port = port
-        self.serial = serial.Serial(port)
+        self.serial = serial.Serial(port, baudrate=baudrate, timeout=timeout)
 
         # open the port
         self.open()
@@ -30,11 +31,14 @@ class OilDispenser():
         self.serial.write(b'?powersupply\n')
         return self.serial.readline()
 
+    def getTimebase(self):
+        self.serial.write(b'!timebase\n')
+        return self.serial.readline()
+
     def setLeadTime(self, lead_time: int):
         instruction = b'!leadtime ' + bytes(str(lead_time), encoding='utf8')
         self.serial.write(instruction + b'\n')
 
-    # dispenser utilities
     def dispense(self, time: int):
         instruction = b'!drop ' + bytes(str(time), encoding='utf8')
         self.serial.write(instruction + b'\n')
@@ -42,13 +46,3 @@ class OilDispenser():
     def setTimebase(self, timebase: int):
         instruction = b'!timebase ' + bytes(str(timebase), encoding='utf8')
         self.serial.write(instruction + b'\n')
-
-    def getTimebase(self):
-        self.serial.write(b'!timebase\n')
-        return self.serial.readline()
-
-
-if __name__ == "__main__":
-    # test OilDispenser class
-    dispenser = OilDispenser('COM7')
-    dispenser.open()
