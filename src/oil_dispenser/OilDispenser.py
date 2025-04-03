@@ -1,9 +1,13 @@
 import serial
+import logging
 
 class OilDispenser():
-    def __init__(self, port, baudrate=57600, timeout=1):
+    def __init__(self,
+                 port: str,
+                 baudrate: int = 57600,
+                 timeout: int = 1):
         self.port = port
-        self.serial = serial.Serial(port)
+        self.serial = serial.Serial(port, baudrate=baudrate, timeout=timeout)
 
         # open the port
         self.open()
@@ -12,8 +16,12 @@ class OilDispenser():
     def open(self):
         try:
             self.serial.open()
+            logging.info("OilDispenser COM port opened successfully.")
         except serial.SerialException:
-            print("Failed to open port.")
+            logging.info("Failed to open port. Trying to close and re-open...")
+            self.serial.close()
+            self.serial.open()
+            logging.info("Second attempt successful!")
 
     def close(self):
         self.serial.close()
